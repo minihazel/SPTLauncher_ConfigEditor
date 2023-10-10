@@ -74,7 +74,7 @@ namespace SPTLauncher_ConfigEditor
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             dialog.IsFolderPicker = true;
-
+            
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string fullPath = Path.GetFullPath(dialog.FileName);
@@ -105,6 +105,15 @@ namespace SPTLauncher_ConfigEditor
                     string fullPathItem = Path.Combine(fullPath, item);
                     string originalPathItem = Path.Combine(currentDir, item);
                     File.Copy(fullPathItem, originalPathItem, true);
+                }
+
+                configItems.Tag = null;
+                configItems.Items.Clear();
+
+                if (MessageBox.Show($"Config files successfully copied.{Environment.NewLine}{Environment.NewLine}" +
+                                    $"Would you like to exit now?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Application.Exit();
                 }
             }
             catch (Exception ex)
