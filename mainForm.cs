@@ -28,35 +28,23 @@ namespace SPTLauncher_ConfigEditor
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            string SPTPath = Path.Combine(currentDir, "SPT Launcher.exe");
-            bool SPTExists = File.Exists(SPTPath);
-            if (SPTExists)
+            string sptLauncher = $"SPT Launcher.exe";
+            if (IsProcessRunning(sptLauncher))
             {
-                string sptLauncher = $"SPT Launcher.exe";
-                if (IsProcessRunning(sptLauncher))
-                {
-                    btnBrowse.Enabled = false;
-                    bApplyNewFiles.Enabled = false;
-                    bCloseLauncher.Enabled = true;
-                    bCloseLauncher.Visible = true;
-                }
-                else
-                {
-                    btnBrowse.Enabled = true;
-                    bApplyNewFiles.Enabled = true;
-                    bCloseLauncher.Enabled = false;
-                    bCloseLauncher.Visible = false;
-                }
-
-                placeholder.Select();
+                btnBrowse.Enabled = false;
+                bApplyNewFiles.Enabled = false;
+                bCloseLauncher.Enabled = true;
+                bCloseLauncher.Visible = true;
             }
             else
             {
-                if (MessageBox.Show("Couldn\'t detect SPT Launcher.exe. Please place this app in the same folder as the SPT Launcher, then try again.", this.Text, MessageBoxButtons.OK) == DialogResult.OK)
-                {
-                    Application.Exit();
-                }
+                btnBrowse.Enabled = true;
+                bApplyNewFiles.Enabled = true;
+                bCloseLauncher.Enabled = false;
+                bCloseLauncher.Visible = false;
             }
+
+            placeholder.Select();
         }
 
         static bool IsProcessRunning(string processName)
