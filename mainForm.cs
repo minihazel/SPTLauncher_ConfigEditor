@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,7 @@ namespace SPTLauncher_ConfigEditor
         public Color listSelectedcolor = Color.FromArgb(255, 50, 50, 50);
         public Color listHovercolor = Color.FromArgb(255, 45, 45, 45);
         public string currentDir = Environment.CurrentDirectory;
+        string SPTMini;
 
         public mainForm()
         {
@@ -28,6 +30,7 @@ namespace SPTLauncher_ConfigEditor
 
         private void mainForm_Load(object sender, EventArgs e)
         {
+
             string sptLauncher = $"SPT Launcher.exe";
             if (IsProcessRunning(sptLauncher))
             {
@@ -44,7 +47,40 @@ namespace SPTLauncher_ConfigEditor
                 bCloseLauncher.Visible = false;
             }
 
+            SPTMini = Path.Combine(currentDir, "SPT Mini.json");
+            bool SPTMiniExists = File.Exists(SPTMini);
+            if (SPTMiniExists)
+            {
+                JObject DevStatus = fetchStatus();
+                bool simplemode = (bool)DevStatus;
+                boolDeveloperMode.Enabled = false;
+                boolDeveloperMode.Text = simplemode ? "ON" : "OFF";
+            }
+            else
+            {
+                boolDeveloperMode.Enabled = true;
+                boolDeveloperMode.Text = "N/A";
+            }
+
             placeholder.Select();
+        }
+
+        private JObject fetchStatus()
+        {
+            string sptContent = File.ReadAllText(SPTMini);
+            JObject sptRead = JObject.Parse(sptContent);
+
+            if (sptRead.ContainsKey("Developer_Options"))
+            {
+                JObject developerOptions = (JObject)sptRead["Developer_Options"];
+                if (developerOptions != null && developerOptions.ContainsKey("Simple_Mode"))
+                {
+                    JObject SimpleMode = (JObject)developerOptions["Simple_Mode"];
+                    return SimpleMode;
+                }
+            }
+
+            return null;
         }
 
         static bool IsProcessRunning(string processName)
@@ -208,6 +244,70 @@ namespace SPTLauncher_ConfigEditor
                     {
                         Console.WriteLine($"Error closing process: {ex.Message}");
                     }
+                }
+            }
+        }
+
+        private void boolDeveloperMode_MouseEnter(object sender, EventArgs e)
+        {
+            boolDeveloperMode.BackColor = listSelectedcolor;
+        }
+
+        private void boolDeveloperMode_MouseLeave(object sender, EventArgs e)
+        {
+            boolDeveloperMode.BackColor = listBackcolor;
+        }
+
+        private void boolDeveloperMode_MouseDown(object sender, MouseEventArgs e)
+        {
+            SPTMini = Path.Combine(currentDir, "SPT Mini.json");
+            bool SPTMiniExists = File.Exists(SPTMini);
+            if (SPTMiniExists)
+            {
+                string sptContent = File.ReadAllText(SPTMini);
+                JObject sptRead = JObject.Parse(sptContent);
+
+                if (boolDeveloperMode.Text.ToLower() == "on")
+                {
+                    boolDeveloperMode.Text = "OFF";
+                    boolDeveloperMode.ForeColor = Color.IndianRed;
+
+                    if (sptRead.ContainsKey("Developer_Options"))
+                    {
+                        JObject developerOptions = (JObject)sptRead["Developer_Options"];
+                        if (developerOptions.ContainsKey("Simple_Mode"))
+                        {
+                            developerOptions["Simple_Mode"] = false;
+                        }
+                    }
+                }
+                else
+                {
+                    boolDeveloperMode.Text = "ON";
+                    boolDeveloperMode.ForeColor = Color.DodgerBlue;
+
+                    if (sptRead.ContainsKey("Developer_Options"))
+                    {
+                        JObject developerOptions = (JObject)sptRead["Developer_Options"];
+                        if (developerOptions.ContainsKey("Simple_Mode"))
+                        {
+                            developerOptions["Simple_Mode"] = true;
+                        }
+                    }
+                }
+
+                string updatedJSON = sptRead.ToString();
+
+                try
+                {
+                    File.WriteAllText(updatedJSON, SPTMini);
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show($"WriteAllText failed with the following reason:" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}" +
+                        $"{err}", this.Text, MessageBoxButtons.OK);
                 }
             }
         }

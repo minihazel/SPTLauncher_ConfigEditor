@@ -35,8 +35,10 @@
             this.bApplyNewFiles = new System.Windows.Forms.Label();
             this.placeholder = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.separator1 = new System.Windows.Forms.Panel();
             this.bCloseLauncher = new System.Windows.Forms.Label();
+            this.boolDeveloperMode = new System.Windows.Forms.Label();
+            this.titleDeveloperMode = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // configItems
@@ -136,13 +138,13 @@
             this.label1.Text = "< < <   Drag and drop files";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // panel1
+            // separator1
             // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(335, 15);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1, 347);
-            this.panel1.TabIndex = 6;
+            this.separator1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.separator1.Location = new System.Drawing.Point(335, 15);
+            this.separator1.Name = "separator1";
+            this.separator1.Size = new System.Drawing.Size(1, 347);
+            this.separator1.TabIndex = 6;
             // 
             // bCloseLauncher
             // 
@@ -162,6 +164,36 @@
             this.bCloseLauncher.MouseEnter += new System.EventHandler(this.bCloseLauncher_MouseEnter);
             this.bCloseLauncher.MouseLeave += new System.EventHandler(this.bCloseLauncher_MouseLeave);
             // 
+            // boolDeveloperMode
+            // 
+            this.boolDeveloperMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.boolDeveloperMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.boolDeveloperMode.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.boolDeveloperMode.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
+            this.boolDeveloperMode.Location = new System.Drawing.Point(556, 166);
+            this.boolDeveloperMode.Name = "boolDeveloperMode";
+            this.boolDeveloperMode.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
+            this.boolDeveloperMode.Size = new System.Drawing.Size(100, 40);
+            this.boolDeveloperMode.TabIndex = 9;
+            this.boolDeveloperMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.boolDeveloperMode.MouseDown += new System.Windows.Forms.MouseEventHandler(this.boolDeveloperMode_MouseDown);
+            this.boolDeveloperMode.MouseEnter += new System.EventHandler(this.boolDeveloperMode_MouseEnter);
+            this.boolDeveloperMode.MouseLeave += new System.EventHandler(this.boolDeveloperMode_MouseLeave);
+            // 
+            // titleDeveloperMode
+            // 
+            this.titleDeveloperMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.titleDeveloperMode.BackColor = System.Drawing.Color.Transparent;
+            this.titleDeveloperMode.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.titleDeveloperMode.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
+            this.titleDeveloperMode.Location = new System.Drawing.Point(342, 166);
+            this.titleDeveloperMode.Name = "titleDeveloperMode";
+            this.titleDeveloperMode.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
+            this.titleDeveloperMode.Size = new System.Drawing.Size(208, 40);
+            this.titleDeveloperMode.TabIndex = 10;
+            this.titleDeveloperMode.Text = "DEVELOPER MODE";
+            this.titleDeveloperMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // mainForm
             // 
             this.AllowDrop = true;
@@ -169,8 +201,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(668, 376);
+            this.Controls.Add(this.titleDeveloperMode);
+            this.Controls.Add(this.boolDeveloperMode);
             this.Controls.Add(this.bCloseLauncher);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.separator1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.placeholder);
             this.Controls.Add(this.bApplyNewFiles);
@@ -181,7 +215,7 @@
             this.ForeColor = System.Drawing.Color.LightGray;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "mainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Browse configs";
@@ -199,8 +233,10 @@
         private System.Windows.Forms.Label bApplyNewFiles;
         private System.Windows.Forms.Label placeholder;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel separator1;
         private System.Windows.Forms.Label bCloseLauncher;
+        private System.Windows.Forms.Label boolDeveloperMode;
+        private System.Windows.Forms.Label titleDeveloperMode;
     }
 }
 
