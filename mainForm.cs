@@ -1,5 +1,5 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json.Linq;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace SPTLauncher_ConfigEditor
@@ -50,7 +51,7 @@ namespace SPTLauncher_ConfigEditor
             bool SPTMiniExists = File.Exists(SPTMini);
             if (SPTMiniExists)
             {
-                JToken DevStatus = (JToken)fetchStatus();
+                object DevStatus = fetchStatus();
                 bool simplemode = (bool)DevStatus;
                 boolDeveloperMode.Enabled = true;
                 boolDeveloperMode.Text = simplemode ? "ON" : "OFF";
@@ -65,22 +66,105 @@ namespace SPTLauncher_ConfigEditor
             placeholder.Select();
         }
 
-        private JToken fetchStatus()
+        private void addCustomHandlers(Control.ControlCollection controls)
         {
-            string sptContent = File.ReadAllText(SPTMini);
-            JObject sptRead = JObject.Parse(sptContent);
-
-            if (sptRead.ContainsKey("Developer_Options"))
+            foreach (Control control in controls)
             {
-                JObject developerOptions = (JObject)sptRead["Developer_Options"];
-                if (developerOptions != null && developerOptions.ContainsKey("Simple_Mode"))
+                control.MouseDown += selectHandler;
+                control.Click += selectHandler;
+
+                if (control.HasChildren)
                 {
-                    JToken SimpleMode = (JToken)developerOptions["Simple_Mode"];
-                    return SimpleMode;
+                    addCustomHandlers(control.Controls);
                 }
             }
+        }
 
-            return null;
+        private void selectHandler(object sender, EventArgs e)
+        {
+            placeholder.Select();
+        }
+
+        private void selectMouseHandler(object sender, MouseEventArgs e)
+        {
+            placeholder.Select();
+        }
+
+        private object fetchStatus()
+        {
+            try
+            {
+                string sptContent = File.ReadAllText(SPTMini);
+                var serializer = new JavaScriptSerializer();
+                var sptObject = serializer.Deserialize<Dictionary<string, object>>(sptContent);
+
+                if (sptObject.ContainsKey("Developer_Options") && sptObject["Developer_Options"] is Dictionary<string, object> devOptions)
+                {
+                    if (devOptions.TryGetValue("Simple_Mode", out var simpleMode))
+                    {
+                        return simpleMode;
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching Simple_Mode: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void removeListItem()
+        {
+            if (configItems.Items.Count > -1 && configItems.SelectedIndex > -1)
+            {
+                configItems.Items.Remove(configItems.SelectedItem);
+            }
+
+            placeholder.Select();
+        }
+
+        private void ToggleSimpleMode()
+        {
+            try
+            {
+                string sptContent = File.ReadAllText(SPTMini);
+                var serializer = new JavaScriptSerializer();
+                var sptObject = serializer.Deserialize<Dictionary<string, object>>(sptContent);
+
+                if (!sptObject.ContainsKey("Developer_Options"))
+                {
+                    sptObject["Developer_Options"] = new Dictionary<string, object>();
+                }
+
+                var developerOptions = (Dictionary<string, object>)sptObject["Developer_Options"];
+
+                if (!developerOptions.ContainsKey("Simple_Mode"))
+                {
+                    developerOptions["Simple_Mode"] = false;
+                }
+
+                if (boolDeveloperMode.Text.ToLower() == "on")
+                {
+                    boolDeveloperMode.Text = "OFF";
+                    boolDeveloperMode.ForeColor = Color.IndianRed;
+                    developerOptions["Simple_Mode"] = false;
+                }
+                else
+                {
+                    boolDeveloperMode.Text = "ON";
+                    boolDeveloperMode.ForeColor = Color.DodgerBlue;
+                    developerOptions["Simple_Mode"] = true;
+                }
+
+                string updatedSptContent = serializer.Serialize(sptObject);
+                File.WriteAllText(SPTMini, updatedSptContent);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error toggling Simple_Mode: {ex.Message}");
+            }
         }
 
         static bool IsProcessRunning(string processName)
@@ -260,88 +344,24 @@ namespace SPTLauncher_ConfigEditor
 
         private void boolDeveloperMode_MouseDown(object sender, MouseEventArgs e)
         {
-            SPTMini = Path.Combine(currentDir, "SPT Mini.json");
-            bool SPTMiniExists = File.Exists(SPTMini);
-            if (SPTMiniExists)
-            {
-                string sptContent = File.ReadAllText(SPTMini);
-                JObject sptRead = JObject.Parse(sptContent);
-
-                if (boolDeveloperMode.Text.ToLower() == "on")
-                {
-                    boolDeveloperMode.Text = "OFF";
-                    boolDeveloperMode.ForeColor = Color.IndianRed;
-
-                    if (sptRead.ContainsKey("Developer_Options"))
-                    {
-                        JObject developerOptions = (JObject)sptRead["Developer_Options"];
-                        if (developerOptions.ContainsKey("Simple_Mode"))
-                        {
-                            developerOptions["Simple_Mode"] = false;
-                        }
-                    }
-                }
-                else
-                {
-                    boolDeveloperMode.Text = "ON";
-                    boolDeveloperMode.ForeColor = Color.DodgerBlue;
-
-                    if (sptRead.ContainsKey("Developer_Options"))
-                    {
-                        JObject developerOptions = (JObject)sptRead["Developer_Options"];
-                        if (developerOptions.ContainsKey("Simple_Mode"))
-                        {
-                            developerOptions["Simple_Mode"] = true;
-                        }
-                    }
-                }
-
-                string updatedJSON = sptRead.ToString();
-
-                try
-                {
-                    File.WriteAllText(SPTMini, updatedJSON);
-                }
-                catch (Exception err)
-                {
-                    if (err.Message.ToLower().Contains("permission"))
-                    {
-                        MessageBox.Show($"WriteAllText failed due to a permissions issue." +
-                            $"{Environment.NewLine}" +
-                            $"Full error:" +
-                            $"{Environment.NewLine}" +
-                            $"{err}", this.Text, MessageBoxButtons.OK);
-                    }
-                    else
-                    {
-                        MessageBox.Show($"WriteAllText failed with the following reason:" +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}" +
-                            $"{err}", this.Text, MessageBoxButtons.OK);
-                    }
-                }
-            }
+            ToggleSimpleMode();
         }
 
         private void itemDetector_Tick(object sender, EventArgs e)
         {
-            if (configItems.Items.Count > 0)
-            {
-                bApplyNewFiles.Enabled = true;
-                bClearAll.Enabled = false;
+            if (configItems.SelectedIndex > -1)
                 bRemoveSelected.Enabled = true;
-            }
-            else if (configItems.Items.Count == 1)
-            {
-                bApplyNewFiles.Enabled = true;
-                bClearAll.Enabled = true;
-                bRemoveSelected.Enabled = true;
-            }
             else
+                bRemoveSelected.Enabled = false;
+
+            if (configItems.Items.Count == 0)
             {
                 bApplyNewFiles.Enabled = false;
                 bClearAll.Enabled = false;
-                bRemoveSelected.Enabled = false;
+            }
+            else
+            {
+                bClearAll.Enabled = true;
             }
         }
 
@@ -356,15 +376,11 @@ namespace SPTLauncher_ConfigEditor
 
         private void bRemoveSelected_Click(object sender, EventArgs e)
         {
-
         }
 
         private void bRemoveSelected_MouseDown(object sender, MouseEventArgs e)
         {
-            if (configItems.Items.Count > -1 && configItems.SelectedIndex > -1)
-            {
-                configItems.Items.Remove(configItems.SelectedItem);
-            }
+            removeListItem();   
         }
 
         private void bRemoveSelected_MouseEnter(object sender, EventArgs e)
@@ -379,7 +395,6 @@ namespace SPTLauncher_ConfigEditor
 
         private void bClearAll_Click(object sender, EventArgs e)
         {
-
         }
 
         private void bClearAll_MouseDown(object sender, MouseEventArgs e)
@@ -396,6 +411,14 @@ namespace SPTLauncher_ConfigEditor
         private void bClearAll_MouseLeave(object sender, EventArgs e)
         {
             bClearAll.BackColor = listBackcolor;
+        }
+
+        private void configItems_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                removeListItem();
+            }
         }
     }
 }

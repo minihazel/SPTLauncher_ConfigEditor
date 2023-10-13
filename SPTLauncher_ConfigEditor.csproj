@@ -24,7 +24,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>false</MapFileExtensions>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>18</ApplicationRevision>
+    <ApplicationRevision>27</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -63,19 +63,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomMarshalers" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.8.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft-Windows10-APICodePack-Core.1.1.8\lib\net48\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.8.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft-Windows10-APICodePack-Shell.1.1.8\lib\net48\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -141,16 +136,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PublishFile Include="Microsoft.WindowsAPICodePack">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
     <PublishFile Include="Microsoft.WindowsAPICodePack.Shell">
       <Visible>False</Visible>
       <Group>
@@ -177,7 +162,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Auto</PublishState>
+      <PublishState>Exclude</PublishState>
       <IncludeHash>False</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
@@ -187,7 +172,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Auto</PublishState>
+      <PublishState>Exclude</PublishState>
       <IncludeHash>False</IncludeHash>
       <FileType>ManifestEntryPoint</FileType>
     </PublishFile>

@@ -62,6 +62,7 @@
             this.configItems.TabIndex = 0;
             this.configItems.DragDrop += new System.Windows.Forms.DragEventHandler(this.configItems_DragDrop);
             this.configItems.DragEnter += new System.Windows.Forms.DragEventHandler(this.configItems_DragEnter);
+            this.configItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.configItems_KeyDown);
             // 
             // btnBrowse
             // 
@@ -133,7 +134,7 @@
             // titleDragandDrop
             // 
             this.titleDragandDrop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.titleDragandDrop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.titleDragandDrop.BackColor = System.Drawing.Color.Transparent;
             this.titleDragandDrop.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
             this.titleDragandDrop.Location = new System.Drawing.Point(14, 15);
             this.titleDragandDrop.Name = "titleDragandDrop";
@@ -189,7 +190,7 @@
             // 
             this.titleDeveloperMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.titleDeveloperMode.BackColor = System.Drawing.Color.Transparent;
-            this.titleDeveloperMode.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.titleDeveloperMode.Cursor = System.Windows.Forms.Cursors.Default;
             this.titleDeveloperMode.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
             this.titleDeveloperMode.Location = new System.Drawing.Point(342, 113);
             this.titleDeveloperMode.Name = "titleDeveloperMode";
