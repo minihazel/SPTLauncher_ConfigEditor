@@ -28,17 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainForm));
             this.configItems = new System.Windows.Forms.ListBox();
             this.btnBrowse = new System.Windows.Forms.Label();
             this.bExit = new System.Windows.Forms.Label();
             this.bApplyNewFiles = new System.Windows.Forms.Label();
             this.placeholder = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.titleDragandDrop = new System.Windows.Forms.Label();
             this.separator1 = new System.Windows.Forms.Panel();
             this.bCloseLauncher = new System.Windows.Forms.Label();
             this.boolDeveloperMode = new System.Windows.Forms.Label();
             this.titleDeveloperMode = new System.Windows.Forms.Label();
+            this.itemDetector = new System.Windows.Forms.Timer(this.components);
+            this.bClearAll = new System.Windows.Forms.Label();
+            this.bRemoveSelected = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // configItems
@@ -52,9 +56,9 @@
             this.configItems.ForeColor = System.Drawing.Color.LightGray;
             this.configItems.FormattingEnabled = true;
             this.configItems.ItemHeight = 23;
-            this.configItems.Location = new System.Drawing.Point(12, 15);
+            this.configItems.Location = new System.Drawing.Point(12, 61);
             this.configItems.Name = "configItems";
-            this.configItems.Size = new System.Drawing.Size(317, 345);
+            this.configItems.Size = new System.Drawing.Size(311, 253);
             this.configItems.TabIndex = 0;
             this.configItems.DragDrop += new System.Windows.Forms.DragEventHandler(this.configItems_DragDrop);
             this.configItems.DragEnter += new System.Windows.Forms.DragEventHandler(this.configItems_DragEnter);
@@ -100,6 +104,7 @@
             this.bApplyNewFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bApplyNewFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.bApplyNewFiles.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bApplyNewFiles.Enabled = false;
             this.bApplyNewFiles.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
             this.bApplyNewFiles.Location = new System.Drawing.Point(348, 64);
             this.bApplyNewFiles.Name = "bApplyNewFiles";
@@ -125,18 +130,18 @@
             this.placeholder.Text = "placeholder";
             this.placeholder.Visible = false;
             // 
-            // label1
+            // titleDragandDrop
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
-            this.label1.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
-            this.label1.Location = new System.Drawing.Point(348, 273);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
-            this.label1.Size = new System.Drawing.Size(308, 40);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "< < <   Drag and drop files";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.titleDragandDrop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.titleDragandDrop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.titleDragandDrop.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
+            this.titleDragandDrop.Location = new System.Drawing.Point(14, 15);
+            this.titleDragandDrop.Name = "titleDragandDrop";
+            this.titleDragandDrop.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
+            this.titleDragandDrop.Size = new System.Drawing.Size(309, 40);
+            this.titleDragandDrop.TabIndex = 5;
+            this.titleDragandDrop.Text = "Drag and drop files below";
+            this.titleDragandDrop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // separator1
             // 
@@ -153,7 +158,7 @@
             this.bCloseLauncher.Cursor = System.Windows.Forms.Cursors.Hand;
             this.bCloseLauncher.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
             this.bCloseLauncher.ForeColor = System.Drawing.Color.IndianRed;
-            this.bCloseLauncher.Location = new System.Drawing.Point(348, 113);
+            this.bCloseLauncher.Location = new System.Drawing.Point(348, 273);
             this.bCloseLauncher.Name = "bCloseLauncher";
             this.bCloseLauncher.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
             this.bCloseLauncher.Size = new System.Drawing.Size(308, 40);
@@ -170,7 +175,7 @@
             this.boolDeveloperMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.boolDeveloperMode.Cursor = System.Windows.Forms.Cursors.Hand;
             this.boolDeveloperMode.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
-            this.boolDeveloperMode.Location = new System.Drawing.Point(556, 166);
+            this.boolDeveloperMode.Location = new System.Drawing.Point(556, 113);
             this.boolDeveloperMode.Name = "boolDeveloperMode";
             this.boolDeveloperMode.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
             this.boolDeveloperMode.Size = new System.Drawing.Size(100, 40);
@@ -186,13 +191,54 @@
             this.titleDeveloperMode.BackColor = System.Drawing.Color.Transparent;
             this.titleDeveloperMode.Cursor = System.Windows.Forms.Cursors.Hand;
             this.titleDeveloperMode.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
-            this.titleDeveloperMode.Location = new System.Drawing.Point(342, 166);
+            this.titleDeveloperMode.Location = new System.Drawing.Point(342, 113);
             this.titleDeveloperMode.Name = "titleDeveloperMode";
             this.titleDeveloperMode.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
             this.titleDeveloperMode.Size = new System.Drawing.Size(208, 40);
             this.titleDeveloperMode.TabIndex = 10;
             this.titleDeveloperMode.Text = "DEVELOPER MODE";
             this.titleDeveloperMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // itemDetector
+            // 
+            this.itemDetector.Interval = 300;
+            this.itemDetector.Tick += new System.EventHandler(this.itemDetector_Tick);
+            // 
+            // bClearAll
+            // 
+            this.bClearAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bClearAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.bClearAll.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bClearAll.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
+            this.bClearAll.Location = new System.Drawing.Point(14, 322);
+            this.bClearAll.Name = "bClearAll";
+            this.bClearAll.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
+            this.bClearAll.Size = new System.Drawing.Size(150, 40);
+            this.bClearAll.TabIndex = 11;
+            this.bClearAll.Text = "Clear all";
+            this.bClearAll.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.bClearAll.Click += new System.EventHandler(this.bClearAll_Click);
+            this.bClearAll.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bClearAll_MouseDown);
+            this.bClearAll.MouseEnter += new System.EventHandler(this.bClearAll_MouseEnter);
+            this.bClearAll.MouseLeave += new System.EventHandler(this.bClearAll_MouseLeave);
+            // 
+            // bRemoveSelected
+            // 
+            this.bRemoveSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bRemoveSelected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.bRemoveSelected.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bRemoveSelected.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
+            this.bRemoveSelected.Location = new System.Drawing.Point(173, 322);
+            this.bRemoveSelected.Name = "bRemoveSelected";
+            this.bRemoveSelected.Padding = new System.Windows.Forms.Padding(5, 0, 0, 2);
+            this.bRemoveSelected.Size = new System.Drawing.Size(150, 40);
+            this.bRemoveSelected.TabIndex = 12;
+            this.bRemoveSelected.Text = "Remove selected";
+            this.bRemoveSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.bRemoveSelected.Click += new System.EventHandler(this.bRemoveSelected_Click);
+            this.bRemoveSelected.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bRemoveSelected_MouseDown);
+            this.bRemoveSelected.MouseEnter += new System.EventHandler(this.bRemoveSelected_MouseEnter);
+            this.bRemoveSelected.MouseLeave += new System.EventHandler(this.bRemoveSelected_MouseLeave);
             // 
             // mainForm
             // 
@@ -201,11 +247,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(668, 376);
+            this.Controls.Add(this.bRemoveSelected);
+            this.Controls.Add(this.bClearAll);
             this.Controls.Add(this.titleDeveloperMode);
             this.Controls.Add(this.boolDeveloperMode);
             this.Controls.Add(this.bCloseLauncher);
             this.Controls.Add(this.separator1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.titleDragandDrop);
             this.Controls.Add(this.placeholder);
             this.Controls.Add(this.bApplyNewFiles);
             this.Controls.Add(this.bExit);
@@ -219,6 +267,7 @@
             this.Name = "mainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Browse configs";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -232,11 +281,14 @@
         private System.Windows.Forms.Label bExit;
         private System.Windows.Forms.Label bApplyNewFiles;
         private System.Windows.Forms.Label placeholder;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label titleDragandDrop;
         private System.Windows.Forms.Panel separator1;
         private System.Windows.Forms.Label bCloseLauncher;
         private System.Windows.Forms.Label boolDeveloperMode;
         private System.Windows.Forms.Label titleDeveloperMode;
+        private System.Windows.Forms.Timer itemDetector;
+        private System.Windows.Forms.Label bClearAll;
+        private System.Windows.Forms.Label bRemoveSelected;
     }
 }
 

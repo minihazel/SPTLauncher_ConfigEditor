@@ -30,8 +30,7 @@ namespace SPTLauncher_ConfigEditor
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-
-            string sptLauncher = $"SPT Launcher.exe";
+            string sptLauncher = $"SPT Launcher";
             if (IsProcessRunning(sptLauncher))
             {
                 btnBrowse.Enabled = false;
@@ -51,21 +50,22 @@ namespace SPTLauncher_ConfigEditor
             bool SPTMiniExists = File.Exists(SPTMini);
             if (SPTMiniExists)
             {
-                JObject DevStatus = fetchStatus();
+                JToken DevStatus = (JToken)fetchStatus();
                 bool simplemode = (bool)DevStatus;
-                boolDeveloperMode.Enabled = false;
+                boolDeveloperMode.Enabled = true;
                 boolDeveloperMode.Text = simplemode ? "ON" : "OFF";
             }
             else
             {
-                boolDeveloperMode.Enabled = true;
+                boolDeveloperMode.Enabled = false;
                 boolDeveloperMode.Text = "N/A";
             }
 
+            itemDetector.Start();
             placeholder.Select();
         }
 
-        private JObject fetchStatus()
+        private JToken fetchStatus()
         {
             string sptContent = File.ReadAllText(SPTMini);
             JObject sptRead = JObject.Parse(sptContent);
@@ -75,7 +75,7 @@ namespace SPTLauncher_ConfigEditor
                 JObject developerOptions = (JObject)sptRead["Developer_Options"];
                 if (developerOptions != null && developerOptions.ContainsKey("Simple_Mode"))
                 {
-                    JObject SimpleMode = (JObject)developerOptions["Simple_Mode"];
+                    JToken SimpleMode = (JToken)developerOptions["Simple_Mode"];
                     return SimpleMode;
                 }
             }
@@ -300,16 +300,102 @@ namespace SPTLauncher_ConfigEditor
 
                 try
                 {
-                    File.WriteAllText(updatedJSON, SPTMini);
+                    File.WriteAllText(SPTMini, updatedJSON);
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show($"WriteAllText failed with the following reason:" +
-                        $"{Environment.NewLine}" +
-                        $"{Environment.NewLine}" +
-                        $"{err}", this.Text, MessageBoxButtons.OK);
+                    if (err.Message.ToLower().Contains("permission"))
+                    {
+                        MessageBox.Show($"WriteAllText failed due to a permissions issue." +
+                            $"{Environment.NewLine}" +
+                            $"Full error:" +
+                            $"{Environment.NewLine}" +
+                            $"{err}", this.Text, MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"WriteAllText failed with the following reason:" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}" +
+                            $"{err}", this.Text, MessageBoxButtons.OK);
+                    }
                 }
             }
+        }
+
+        private void itemDetector_Tick(object sender, EventArgs e)
+        {
+            if (configItems.Items.Count > 0)
+            {
+                bApplyNewFiles.Enabled = true;
+                bClearAll.Enabled = false;
+                bRemoveSelected.Enabled = true;
+            }
+            else if (configItems.Items.Count == 1)
+            {
+                bApplyNewFiles.Enabled = true;
+                bClearAll.Enabled = true;
+                bRemoveSelected.Enabled = true;
+            }
+            else
+            {
+                bApplyNewFiles.Enabled = false;
+                bClearAll.Enabled = false;
+                bRemoveSelected.Enabled = false;
+            }
+        }
+
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (itemDetector != null)
+            {
+                itemDetector.Stop();
+                itemDetector.Dispose();
+            }
+        }
+
+        private void bRemoveSelected_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bRemoveSelected_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (configItems.Items.Count > -1 && configItems.SelectedIndex > -1)
+            {
+                configItems.Items.Remove(configItems.SelectedItem);
+            }
+        }
+
+        private void bRemoveSelected_MouseEnter(object sender, EventArgs e)
+        {
+            bRemoveSelected.BackColor = listSelectedcolor;
+        }
+
+        private void bRemoveSelected_MouseLeave(object sender, EventArgs e)
+        {
+            bRemoveSelected.BackColor = listBackcolor;
+        }
+
+        private void bClearAll_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bClearAll_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (configItems.Items.Count > -1)
+                configItems.Items.Clear();
+        }
+
+        private void bClearAll_MouseEnter(object sender, EventArgs e)
+        {
+            bClearAll.BackColor = listSelectedcolor;
+        }
+
+        private void bClearAll_MouseLeave(object sender, EventArgs e)
+        {
+            bClearAll.BackColor = listBackcolor;
         }
     }
 }
